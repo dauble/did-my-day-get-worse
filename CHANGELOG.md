@@ -3,6 +3,11 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-10-17
+
+### Changed
+- Board link now carries the Amazon Associates tag, with the required disclosure in the README and pin-out doc.
+
 ## [1.2.0] - 2026-10-17
 
 ### Added
