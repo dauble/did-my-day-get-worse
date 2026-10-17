@@ -15,8 +15,8 @@ Every 60 seconds the ESP32 first checks that the internet is reachable (your ISP
 `include/config.h`, e.g. Metronet), then fetches each service's status page. A service counts as in outage when
 its status indicator is anything other than `none` or when the page can't be fetched.
 
-If the internet check fails (WiFi down, or no probe URL answers HTTP 204), the ISP and all services are
-counted as down, so the strip goes red without polling the services.
+If the internet check fails (WiFi down, or no probe URL answers HTTP 204), the strip goes red without polling
+the services. Red is also shown whenever `RED_THRESHOLD` or more services are in outage.
 
 > The request said "one or three services" for yellow; this implements **1–2 = yellow, 3+ = red**,
 > matching the red rule. Change `RED_THRESHOLD` in `include/config.h` if you want something else.

@@ -57,14 +57,14 @@ static bool isOnline() {
   return false;
 }
 
-// Polls forever. If the ISP is offline, the ISP and every service count as down.
+// Polls forever. An offline ISP is always red, however few services are configured.
 static void pollTask(void *) {
   for (;;) {
     int down = 0;
     const bool online = isOnline();
     Serial.printf("%-12s %s\n", ISP_NAME, online ? "OK" : "OUTAGE");
     if (!online) {
-      down = 1 + SERVICE_COUNT;
+      down = RED_THRESHOLD;
     } else {
       for (const Service &service : SERVICES) {
         const bool healthy = isHealthy(service);

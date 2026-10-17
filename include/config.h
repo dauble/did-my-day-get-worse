@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.1.0";
+constexpr char FW_VERSION[] = "1.1.1";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 5                     // ESP32 GPIO wired to the strip's data line
@@ -24,7 +24,8 @@ constexpr uint16_t HTTP_TIMEOUT_MS = 8000;
 // --- Internet (ISP) reachability ---------------------------------------------
 // The ISP is checked first. It is online when any probe URL answers HTTP 204
 // (plain HTTP, so captive portals and error pages don't count). When it is offline
-// every service is unreachable, so the strip goes red without polling them.
+// every service is unreachable, so the strip goes red without polling them,
+// regardless of RED_THRESHOLD or how many services are listed.
 constexpr char ISP_NAME[] = "Metronet";
 constexpr const char *ISP_PROBES[] = {
     "http://connectivitycheck.gstatic.com/generate_204",
