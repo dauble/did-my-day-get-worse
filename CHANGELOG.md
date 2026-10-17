@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-10-17
+
+### Added
+- Internet reachability check (`ISP_NAME`, `ISP_PROBES` in `include/config.h`) to report ISP outages such as Metronet.
+  When the check fails, the ISP and all services count as down and the strip goes red.
+
 ## [1.0.0] - 2026-10-17
 
 ### Added

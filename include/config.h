@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.0.0";
+constexpr char FW_VERSION[] = "1.1.0";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 5                     // ESP32 GPIO wired to the strip's data line
@@ -20,6 +20,16 @@ constexpr uint8_t RED_THRESHOLD = 3;
 // --- Polling -----------------------------------------------------------------
 constexpr uint32_t POLL_INTERVAL_MS = 60UL * 1000;
 constexpr uint16_t HTTP_TIMEOUT_MS = 8000;
+
+// --- Internet (ISP) reachability ---------------------------------------------
+// The ISP is checked first. It is online when any probe URL answers HTTP 204
+// (plain HTTP, so captive portals and error pages don't count). When it is offline
+// every service is unreachable, so the strip goes red without polling them.
+constexpr char ISP_NAME[] = "Metronet";
+constexpr const char *ISP_PROBES[] = {
+    "http://connectivitycheck.gstatic.com/generate_204",
+    "http://cp.cloudflare.com/generate_204",
+};
 
 // --- Services ----------------------------------------------------------------
 // Each entry needs a status page that exposes the Atlassian Statuspage API, i.e.

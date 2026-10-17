@@ -11,8 +11,12 @@ The whole strip pulses ("breathes") in one colour:
 | 3 or more | Red |
 | No result yet (booting / first poll) | Blue |
 
-Every 60 seconds the ESP32 fetches each service's status page. A service counts as in outage when its
-status indicator is anything other than `none`, when the page can't be fetched, or when WiFi is down.
+Every 60 seconds the ESP32 first checks that the internet is reachable (your ISP, `ISP_NAME` in
+`include/config.h`, e.g. Metronet), then fetches each service's status page. A service counts as in outage when
+its status indicator is anything other than `none` or when the page can't be fetched.
+
+If the internet check fails (WiFi down, or no probe URL answers HTTP 204), the ISP and all services are
+counted as down, so the strip goes red without polling the services.
 
 > The request said "one or three services" for yellow; this implements **1–2 = yellow, 3+ = red**,
 > matching the red rule. Change `RED_THRESHOLD` in `include/config.h` if you want something else.
@@ -62,6 +66,12 @@ The URL must be the service's status page API endpoint. Most status pages are ho
 [Atlassian Statuspage](https://www.atlassian.com/software/statuspage); for those, append
 `/api/v2/status.json` to the status page address and open it in a browser to confirm you get JSON like
 `{"status":{"indicator":"none", ...}}`. Services on other platforms (e.g. AWS, Google Cloud) are not supported.
+
+## ISP reachability
+
+ISPs like Metronet don't publish a machine-readable status page, so the firmware probes the internet directly.
+`ISP_PROBES` in `include/config.h` lists plain-HTTP "generate_204" URLs; the connection is considered up when any
+one returns HTTP 204. Set `ISP_NAME` to label it in the serial log.
 
 ## Notes
 

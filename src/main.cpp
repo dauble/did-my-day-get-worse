@@ -1,7 +1,7 @@
 // Services status LED strip.
 //
-// A background task polls each service's status page and counts the ones in
-// outage. The main loop pulses the whole strip: green (all healthy), yellow
+// A background task checks internet reachability, then each service's status
+// page, and counts the ones in outage. The main loop pulses the whole strip: green (all healthy), yellow
 // (some in outage) or red (RED_THRESHOLD or more). Blue means "no result yet".
 
 #include <Arduino.h>
@@ -43,14 +43,34 @@ static bool isHealthy(const Service &service) {
   return healthy;
 }
 
-// Polls every service forever; a lost WiFi connection counts every service as down.
+// Returns true when WiFi is up and any probe URL answers HTTP 204.
+static bool isOnline() {
+  if (WiFi.status() != WL_CONNECTED) return false;
+  for (const char *url : ISP_PROBES) {
+    HTTPClient http;
+    http.setTimeout(HTTP_TIMEOUT_MS);
+    if (!http.begin(url)) continue;
+    const int code = http.GET();
+    http.end();
+    if (code == HTTP_CODE_NO_CONTENT) return true;
+  }
+  return false;
+}
+
+// Polls forever. If the ISP is offline, the ISP and every service count as down.
 static void pollTask(void *) {
   for (;;) {
     int down = 0;
-    for (const Service &service : SERVICES) {
-      const bool healthy = WiFi.status() == WL_CONNECTED && isHealthy(service);
-      Serial.printf("%-12s %s\n", service.name, healthy ? "OK" : "OUTAGE");
-      if (!healthy) down++;
+    const bool online = isOnline();
+    Serial.printf("%-12s %s\n", ISP_NAME, online ? "OK" : "OUTAGE");
+    if (!online) {
+      down = 1 + SERVICE_COUNT;
+    } else {
+      for (const Service &service : SERVICES) {
+        const bool healthy = isHealthy(service);
+        Serial.printf("%-12s %s\n", service.name, healthy ? "OK" : "OUTAGE");
+        if (!healthy) down++;
+      }
     }
     outageCount = down;
     vTaskDelay(pdMS_TO_TICKS(POLL_INTERVAL_MS));
