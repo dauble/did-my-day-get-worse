@@ -3,10 +3,10 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.1.1";
+constexpr char FW_VERSION[] = "1.2.0";
 
 // --- LED strip ---------------------------------------------------------------
-#define LED_PIN 5                     // ESP32 GPIO wired to the strip's data line
+#define LED_PIN 18                    // ESP32 GPIO wired to the strip's data line
 constexpr uint16_t LED_COUNT = 30;    // Number of LEDs on the strip
 constexpr uint16_t LED_MAX_MILLIAMPS = 500; // Power cap; keeps a USB supply safe
 constexpr uint8_t PULSE_BPM = 20;           // Pulses per minute

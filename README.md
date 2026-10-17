@@ -23,16 +23,17 @@ the services. Red is also shown whenever `RED_THRESHOLD` or more services are in
 
 ## Hardware
 
-- ESP32 dev board (any `esp32dev`-compatible board)
+- ESP32 dev board, e.g. the [ELEGOO ESP-WROOM-32 3-pack](https://www.amazon.com/dp/B0D8T53CQ5) (any `esp32dev`-compatible board works)
 - WS2812B / NeoPixel LED strip (5 V)
 - 5 V power supply (for long strips, power the strip directly and share ground with the ESP32)
 
 | Strip | ESP32 |
 | --- | --- |
-| DIN | GPIO 5 (`LED_PIN`) |
+| DIN | GPIO 18 (`LED_PIN`) |
 | GND | GND |
 | 5V | 5V / VIN (or external supply) |
 
+See [docs/PINOUT.md](docs/PINOUT.md) for the full pin-out and pin-selection notes.
 A 300–500 Ω resistor on the data line and a 1000 µF capacitor across the strip's power are recommended.
 
 ## Setup (VSCode + PlatformIO)

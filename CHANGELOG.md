@@ -3,6 +3,15 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-10-17
+
+### Added
+- `docs/PINOUT.md` with wiring and pin-selection notes for the ELEGOO ESP-WROOM-32 board.
+- Product link for the recommended board in the README.
+
+### Changed
+- Default `LED_PIN` moved from GPIO 5 (a boot strapping pin) to GPIO 18.
+
 ## [1.1.1] - 2026-10-17
 
 ### Fixed
