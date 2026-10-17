@@ -1,7 +1,9 @@
 # Pin-out and wiring
 
-Target board: [ELEGOO ESP-WROOM-32 development board](https://www.amazon.com/dp/B0D8T53CQ5)
+Target board: [ELEGOO ESP-WROOM-32 development board](https://www.amazon.com/dp/B0D8T53CQ5?tag=dauble-20)
 (ESP32-WROOM-32 module, USB-C, CP2102 USB-to-serial, 2.4 GHz WiFi). PlatformIO board: `esp32dev`.
+
+_As an Amazon Associate I earn from qualifying purchases._
 
 > Pin names come from the ESP32-WROOM-32 module datasheet and the common 38-pin dev-board layout.
 > ELEGOO's silkscreen labels may differ slightly, so match the labels printed on your board

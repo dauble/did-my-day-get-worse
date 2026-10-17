@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.2.0";
+constexpr char FW_VERSION[] = "1.2.1";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 18                    // ESP32 GPIO wired to the strip's data line
