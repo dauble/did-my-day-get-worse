@@ -20,7 +20,8 @@ static CRGB leds[LED_COUNT];
 static volatile int outageCount = NO_RESULT; // written by pollTask, read by loop()
 
 // Returns true when the status page reports indicator "none" (all operational).
-static bool isHealthy(const Service &service) {
+static bool isHealthy(const Service &service)
+{
   WiFiClientSecure client;
   client.setInsecure(); // Public, non-sensitive data; skips certificate management.
 
@@ -28,14 +29,17 @@ static bool isHealthy(const Service &service) {
   http.useHTTP10(true); // Avoids chunked encoding so the body can be streamed to the parser.
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  if (!http.begin(client, service.url)) return false;
+  if (!http.begin(client, service.url))
+    return false;
 
   bool healthy = false;
-  if (http.GET() == HTTP_CODE_OK) {
+  if (http.GET() == HTTP_CODE_OK)
+  {
     JsonDocument filter;
     filter["status"]["indicator"] = true;
     JsonDocument doc;
-    if (!deserializeJson(doc, http.getStream(), DeserializationOption::Filter(filter))) {
+    if (!deserializeJson(doc, http.getStream(), DeserializationOption::Filter(filter)))
+    {
       healthy = strcmp(doc["status"]["indicator"] | "unknown", "none") == 0;
     }
   }
@@ -44,32 +48,44 @@ static bool isHealthy(const Service &service) {
 }
 
 // Returns true when WiFi is up and any probe URL answers HTTP 204.
-static bool isOnline() {
-  if (WiFi.status() != WL_CONNECTED) return false;
-  for (const char *url : ISP_PROBES) {
+static bool isOnline()
+{
+  if (WiFi.status() != WL_CONNECTED)
+    return false;
+  for (const char *url : ISP_PROBES)
+  {
     HTTPClient http;
     http.setTimeout(HTTP_TIMEOUT_MS);
-    if (!http.begin(url)) continue;
+    if (!http.begin(url))
+      continue;
     const int code = http.GET();
     http.end();
-    if (code == HTTP_CODE_NO_CONTENT) return true;
+    if (code == HTTP_CODE_NO_CONTENT)
+      return true;
   }
   return false;
 }
 
 // Polls forever. An offline ISP is always red, however few services are configured.
-static void pollTask(void *) {
-  for (;;) {
+static void pollTask(void *)
+{
+  for (;;)
+  {
     int down = 0;
     const bool online = isOnline();
     Serial.printf("%-12s %s\n", ISP_NAME, online ? "OK" : "OUTAGE");
-    if (!online) {
+    if (!online)
+    {
       down = RED_THRESHOLD;
-    } else {
-      for (const Service &service : SERVICES) {
+    }
+    else
+    {
+      for (const Service &service : SERVICES)
+      {
         const bool healthy = isHealthy(service);
         Serial.printf("%-12s %s\n", service.name, healthy ? "OK" : "OUTAGE");
-        if (!healthy) down++;
+        if (!healthy)
+          down++;
       }
     }
     outageCount = down;
@@ -77,14 +93,19 @@ static void pollTask(void *) {
   }
 }
 
-static CRGB colorFor(int outages) {
-  if (outages == NO_RESULT) return CRGB::Blue;
-  if (outages == 0) return CRGB::Green;
-  if (outages < RED_THRESHOLD) return CRGB(255, 140, 0); // Amber; pure yellow looks green on WS2812.
+static CRGB colorFor(int outages)
+{
+  if (outages == NO_RESULT)
+    return CRGB::Blue;
+  if (outages == 0)
+    return CRGB::Green;
+  if (outages < RED_THRESHOLD)
+    return CRGB(255, 140, 0); // Amber; pure yellow looks green on WS2812.
   return CRGB::Red;
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   Serial.printf("Services status LED v%s\n", FW_VERSION);
 
@@ -97,7 +118,8 @@ void setup() {
   xTaskCreate(pollTask, "poll", 12288, nullptr, 1, nullptr);
 }
 
-void loop() {
+void loop()
+{
   fill_solid(leds, LED_COUNT, colorFor(outageCount));
   FastLED.setBrightness(beatsin8(PULSE_BPM, PULSE_MIN_BRIGHTNESS, PULSE_MAX_BRIGHTNESS));
   FastLED.show();

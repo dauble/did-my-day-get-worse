@@ -11,11 +11,11 @@ _As an Amazon Associate I earn from qualifying purchases._
 
 ## LED strip wiring (WS2812B, 5 V)
 
-| Strip wire | ESP32 board pin | Notes |
-| --- | --- | --- |
-| DIN (data) | **GPIO 18** (`LED_PIN`) | Through a 300–500 Ω resistor |
-| GND | **GND** | Must be shared with the strip's power supply |
-| 5V | **VIN** (5 V from USB) | Short strips only; for longer strips use an external 5 V supply |
+| Strip wire | ESP32 board pin         | Notes                                                           |
+| ---------- | ----------------------- | --------------------------------------------------------------- |
+| DIN (data) | **GPIO 18** (`LED_PIN`) | Through a 300–500 Ω resistor                                    |
+| GND        | **GND**                 | Must be shared with the strip's power supply                    |
+| 5V         | **VIN** (5 V from USB)  | Short strips only; for longer strips use an external 5 V supply |
 
 ```
 USB-C ──► ESP32 ──GPIO18──[330 Ω]──► DIN ┐
@@ -32,12 +32,12 @@ USB-C ──► ESP32 ──GPIO18──[330 Ω]──► DIN ┐
 
 ## Choosing a different data pin
 
-| Pins | Use for LEDs? | Reason |
-| --- | --- | --- |
-| 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33 | Yes | General purpose |
-| 0, 2, 5, 12, 15 | Avoid | Strapping pins, read at boot |
-| 6–11 | Never | Connected to the module's flash |
-| 34, 35, 36, 39 | Never | Input only |
-| 1, 3 | Avoid | UART0 (USB serial / flashing) |
+| Pins                                                      | Use for LEDs? | Reason                          |
+| --------------------------------------------------------- | ------------- | ------------------------------- |
+| 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33 | Yes           | General purpose                 |
+| 0, 2, 5, 12, 15                                           | Avoid         | Strapping pins, read at boot    |
+| 6–11                                                      | Never         | Connected to the module's flash |
+| 34, 35, 36, 39                                            | Never         | Input only                      |
+| 1, 3                                                      | Avoid         | UART0 (USB serial / flashing)   |
 
 `LED_PIN` is set in `include/config.h`.
