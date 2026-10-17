@@ -6,8 +6,8 @@
 constexpr char FW_VERSION[] = "1.2.1";
 
 // --- LED strip ---------------------------------------------------------------
-#define LED_PIN 18                    // ESP32 GPIO wired to the strip's data line
-constexpr uint16_t LED_COUNT = 30;    // Number of LEDs on the strip
+#define LED_PIN 18                          // ESP32 GPIO wired to the strip's data line
+constexpr uint16_t LED_COUNT = 30;          // Number of LEDs on the strip
 constexpr uint16_t LED_MAX_MILLIAMPS = 500; // Power cap; keeps a USB supply safe
 constexpr uint8_t PULSE_BPM = 20;           // Pulses per minute
 constexpr uint8_t PULSE_MIN_BRIGHTNESS = 15;
@@ -36,9 +36,10 @@ constexpr const char *ISP_PROBES[] = {
 // Each entry needs a status page that exposes the Atlassian Statuspage API, i.e.
 // "<status page>/api/v2/status.json". A service counts as in outage when its
 // indicator is anything other than "none" or when the page cannot be fetched.
-struct Service {
-  const char *name;
-  const char *url;
+struct Service
+{
+    const char *name;
+    const char *url;
 };
 
 constexpr Service SERVICES[] = {
