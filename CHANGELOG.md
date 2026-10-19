@@ -3,6 +3,19 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-10-19
+
+### Changed
+- All-healthy now shows a slow breathing wave that chases along the strip instead of a comet. Tune it with `CHASE_BREATH_MS`, `CHASE_WAVES`, `CHASE_MIN_BRIGHTNESS` and `CHASE_MAX_BRIGHTNESS` in `include/config.h`.
+- Default `PULSE_MAX_BRIGHTNESS` lowered from 100 to 50.
+- Cloudflare removed from the default service list; its status page almost always has a minor incident open, which kept the strip on amber.
+
+### Fixed
+- Polls now start every `POLL_INTERVAL_MS` (60 seconds) instead of waiting that long after each round finishes, which made rounds about 70 seconds apart.
+
+### Removed
+- `COMET_STEP_MS`, `COMET_FADE` and `COMET_BRIGHTNESS`; existing configs that set them must switch to the `CHASE_*` options.
+
 ## [1.3.0] - 2026-10-18
 
 ### Added

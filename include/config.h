@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.3.0";
+constexpr char FW_VERSION[] = "2.0.0";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 18                          // ESP32 GPIO wired to the strip's data line
@@ -11,11 +11,12 @@ constexpr uint16_t LED_COUNT = 17;          // Number of LEDs on the strip
 constexpr uint16_t LED_MAX_MILLIAMPS = 500; // Power cap; keeps a USB supply safe
 constexpr uint8_t PULSE_BPM = 20;           // Pulses per minute
 constexpr uint8_t PULSE_MIN_BRIGHTNESS = 15;
-constexpr uint8_t PULSE_MAX_BRIGHTNESS = 100;
-// All-healthy (green) shows a comet chasing along the strip instead of pulsing.
-constexpr uint16_t COMET_STEP_MS = 40; // Time per LED step; lower = faster
-constexpr uint8_t COMET_FADE = 64;     // Tail fade per step (0-255); higher = shorter tail
-constexpr uint8_t COMET_BRIGHTNESS = 100;
+constexpr uint8_t PULSE_MAX_BRIGHTNESS = 50;
+// All-healthy (green) shows a breathing wave chasing along the strip instead of pulsing.
+constexpr uint16_t CHASE_BREATH_MS = 5000; // Time for each LED to breathe in and out; higher = slower
+constexpr uint8_t CHASE_WAVES = 1;         // Number of bright bands along the strip at once
+constexpr uint8_t CHASE_MIN_BRIGHTNESS = 10;
+constexpr uint8_t CHASE_MAX_BRIGHTNESS = 50;
 
 // --- Health thresholds -------------------------------------------------------
 // Services in outage: 0 = sky blue, 1..(RED_THRESHOLD-1) = yellow, >= RED_THRESHOLD = red.
@@ -51,7 +52,7 @@ constexpr Service SERVICES[] = {
     {"Claude", "https://status.claude.com/api/v2/status.json"},
     {"Reddit", "https://www.redditstatus.com/api/v2/status.json"},
     {"Zoom", "https://status.zoom.us/api/v2/status.json"},
-    {"Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json"},
+    // {"Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json"},
     {"DigitalOcean", "https://status.digitalocean.com/api/v2/status.json"},
     {"Figma", "https://status.figma.com/api/v2/status.json"},
     {"Vercel", "https://www.vercel-status.com/api/v2/status.json"},

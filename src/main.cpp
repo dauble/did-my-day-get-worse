@@ -1,7 +1,7 @@
 // Services status LED strip.
 //
 // A background task checks internet reachability, then each service's status
-// page, and counts the ones in outage. All healthy shows a green comet chasing along the strip;
+// page, and counts the ones in outage. All healthy shows a green breathing wave chasing along the strip;
 // otherwise the whole strip pulses yellow (some in outage) or red (RED_THRESHOLD or more).
 // Blue means "no result yet".
 
@@ -74,6 +74,8 @@ static void pollTask(void *)
   for (int i = 0; i < 20 && WiFi.status() != WL_CONNECTED; i++)
     vTaskDelay(pdMS_TO_TICKS(500));
 
+  // Rounds start every POLL_INTERVAL_MS, however long the checks themselves take.
+  TickType_t lastRound = xTaskGetTickCount();
   for (;;)
   {
     int down = 0;
@@ -94,7 +96,7 @@ static void pollTask(void *)
       }
     }
     outageCount = down;
-    vTaskDelay(pdMS_TO_TICKS(POLL_INTERVAL_MS));
+    vTaskDelayUntil(&lastRound, pdMS_TO_TICKS(POLL_INTERVAL_MS));
   }
 }
 
@@ -124,17 +126,18 @@ void setup()
   xTaskCreate(pollTask, "poll", 12288, nullptr, 1, nullptr);
 }
 
-// Moves a bright head one LED per step, leaving a fading tail behind it.
-static void drawComet(const CRGB &color)
+// Every LED breathes, each slightly behind the previous one, so the glow rolls along the strip.
+static void drawChase(const CRGB &color)
 {
-  static uint16_t head = 0;
-  EVERY_N_MILLISECONDS(COMET_STEP_MS)
+  const uint16_t phase = uint32_t(millis() % CHASE_BREATH_MS) * 65536 / CHASE_BREATH_MS;
+  for (uint16_t i = 0; i < LED_COUNT; i++)
   {
-    fadeToBlackBy(leds, LED_COUNT, COMET_FADE);
-    leds[head] = color;
-    head = (head + 1) % LED_COUNT;
+    const uint16_t angle = phase - uint32_t(i) * 65536 * CHASE_WAVES / LED_COUNT;
+    const uint8_t wave = (sin16(angle) + 32768) >> 8; // 0..255
+    leds[i] = color;
+    leds[i].nscale8_video(CHASE_MIN_BRIGHTNESS + scale8(dim8_video(wave), CHASE_MAX_BRIGHTNESS - CHASE_MIN_BRIGHTNESS));
   }
-  FastLED.setBrightness(COMET_BRIGHTNESS);
+  FastLED.setBrightness(255); // Brightness is applied per LED above.
 }
 
 static void drawPulse(const CRGB &color)
@@ -147,7 +150,7 @@ void loop()
 {
   const int outages = outageCount;
   if (outages == 0)
-    drawComet(colorFor(outages));
+    drawChase(colorFor(outages));
   else
     drawPulse(colorFor(outages));
   FastLED.show();

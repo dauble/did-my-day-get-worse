@@ -2,11 +2,11 @@
 
 An ESP32 + WS2812B LED strip that shows the overall health of the online services you depend on,
 inspired by the network-status light in [I Like To Make Stuff's video](https://www.youtube.com/watch?v=WWTxgRnQeJ4) (from 10:47).
-When everything is healthy a sky-blue comet chases along the strip; otherwise the whole strip pulses ("breathes") in one colour:
+When everything is healthy a sky-blue breathing wave chases along the strip; otherwise the whole strip pulses ("breathes") in one colour:
 
 | Services in outage | Colour |
 | --- | --- |
-| 0 | Sky blue (comet) |
+| 0 | Sky blue (chasing breath) |
 | 1–2 | Yellow (amber) |
 | 3 or more | Red |
 | No result yet (booting / first poll) | Blue |
@@ -81,5 +81,5 @@ one returns HTTP 204. Set `ISP_NAME` to label it in the serial log.
 - HTTPS certificates are not verified (`setInsecure()`); the data is public and read-only.
 - The strip is capped at `LED_MAX_MILLIAMPS` (500 mA) so a USB port can power it; raise it for larger strips with a proper supply.
 - Pulse speed and brightness range are `PULSE_BPM`, `PULSE_MIN_BRIGHTNESS`, `PULSE_MAX_BRIGHTNESS`.
-- Comet speed, tail length and brightness are `COMET_STEP_MS`, `COMET_FADE`, `COMET_BRIGHTNESS`.
+- Chase speed, band count and brightness range are `CHASE_BREATH_MS`, `CHASE_WAVES`, `CHASE_MIN_BRIGHTNESS`, `CHASE_MAX_BRIGHTNESS`.
 - Each service is polled one after another; keep the list modest (each fetch may take a second or two).
