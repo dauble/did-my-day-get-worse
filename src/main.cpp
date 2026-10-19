@@ -100,8 +100,6 @@ static void pollTask(void *)
 
 static CRGB colorFor(int outages)
 {
-  Serial.printf("Num outages: %d\n", outages);
-
   if (outages == NO_RESULT)
     return CRGB(0, 0, 255);
   if (outages == 0)

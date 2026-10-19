@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-constexpr char FW_VERSION[] = "1.2.1";
+constexpr char FW_VERSION[] = "1.3.0";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 18                          // ESP32 GPIO wired to the strip's data line
@@ -18,7 +18,7 @@ constexpr uint8_t COMET_FADE = 64;     // Tail fade per step (0-255); higher = s
 constexpr uint8_t COMET_BRIGHTNESS = 100;
 
 // --- Health thresholds -------------------------------------------------------
-// Services in outage: 0 = green, 1..(RED_THRESHOLD-1) = yellow, >= RED_THRESHOLD = red.
+// Services in outage: 0 = sky blue, 1..(RED_THRESHOLD-1) = yellow, >= RED_THRESHOLD = red.
 constexpr uint8_t RED_THRESHOLD = 3;
 
 // --- Polling -----------------------------------------------------------------
@@ -57,6 +57,5 @@ constexpr Service SERVICES[] = {
     {"Vercel", "https://www.vercel-status.com/api/v2/status.json"},
     {"Netlify", "https://www.netlifystatus.com/api/v2/status.json"},
     {"npm", "https://status.npmjs.org/api/v2/status.json"},
-    {"Apple", "https://www.apple.com/support/systemstatus/data/system_status.json"},
 };
 constexpr size_t SERVICE_COUNT = sizeof(SERVICES) / sizeof(SERVICES[0]);
