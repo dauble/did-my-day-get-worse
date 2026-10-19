@@ -1,7 +1,7 @@
 // Services status LED strip.
 //
 // A background task checks internet reachability, then each service's status
-// page, and counts the ones in outage. All healthy shows a green breathing wave chasing along the strip;
+// page, and counts the ones in outage. All healthy shows a sky blue breathing wave chasing along the strip;
 // otherwise the whole strip pulses yellow (some in outage) or red (RED_THRESHOLD or more).
 // Blue means "no result yet".
 

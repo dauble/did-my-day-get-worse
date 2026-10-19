@@ -12,7 +12,7 @@ constexpr uint16_t LED_MAX_MILLIAMPS = 500; // Power cap; keeps a USB supply saf
 constexpr uint8_t PULSE_BPM = 20;           // Pulses per minute
 constexpr uint8_t PULSE_MIN_BRIGHTNESS = 15;
 constexpr uint8_t PULSE_MAX_BRIGHTNESS = 50;
-// All-healthy (green) shows a breathing wave chasing along the strip instead of pulsing.
+// All-healthy (sky blue) shows a breathing wave chasing along the strip instead of pulsing.
 constexpr uint16_t CHASE_BREATH_MS = 5000; // Time for each LED to breathe in and out; higher = slower
 constexpr uint8_t CHASE_WAVES = 1;         // Number of bright bands along the strip at once
 constexpr uint8_t CHASE_MIN_BRIGHTNESS = 10;
