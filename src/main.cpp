@@ -1,8 +1,9 @@
 // Services status LED strip.
 //
 // A background task checks internet reachability, then each service's status
-// page, and counts the ones in outage. The main loop pulses the whole strip: green (all healthy), yellow
-// (some in outage) or red (RED_THRESHOLD or more). Blue means "no result yet".
+// page, and counts the ones in outage. All healthy shows a green comet chasing along the strip;
+// otherwise the whole strip pulses yellow (some in outage) or red (RED_THRESHOLD or more).
+// Blue means "no result yet".
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -69,6 +70,10 @@ static bool isOnline()
 // Polls forever. An offline ISP is always red, however few services are configured.
 static void pollTask(void *)
 {
+  // Give WiFi a chance to connect so the first poll doesn't report a false ISP outage.
+  for (int i = 0; i < 20 && WiFi.status() != WL_CONNECTED; i++)
+    vTaskDelay(pdMS_TO_TICKS(500));
+
   for (;;)
   {
     int down = 0;
@@ -95,13 +100,16 @@ static void pollTask(void *)
 
 static CRGB colorFor(int outages)
 {
+  Serial.printf("Num outages: %d\n", outages);
+
   if (outages == NO_RESULT)
-    return CRGB::Blue;
+    return CRGB(0, 0, 255);
   if (outages == 0)
-    return CRGB::Green;
+    return CRGB(0, 201, 255);
   if (outages < RED_THRESHOLD)
-    return CRGB(255, 140, 0); // Amber; pure yellow looks green on WS2812.
-  return CRGB::Red;
+    return CRGB(255, 187, 0); // Amber; pure yellow looks green on WS2812.
+
+  return CRGB(255, 0, 0);
 }
 
 void setup()
@@ -118,10 +126,32 @@ void setup()
   xTaskCreate(pollTask, "poll", 12288, nullptr, 1, nullptr);
 }
 
+// Moves a bright head one LED per step, leaving a fading tail behind it.
+static void drawComet(const CRGB &color)
+{
+  static uint16_t head = 0;
+  EVERY_N_MILLISECONDS(COMET_STEP_MS)
+  {
+    fadeToBlackBy(leds, LED_COUNT, COMET_FADE);
+    leds[head] = color;
+    head = (head + 1) % LED_COUNT;
+  }
+  FastLED.setBrightness(COMET_BRIGHTNESS);
+}
+
+static void drawPulse(const CRGB &color)
+{
+  fill_solid(leds, LED_COUNT, color);
+  FastLED.setBrightness(beatsin8(PULSE_BPM, PULSE_MIN_BRIGHTNESS, PULSE_MAX_BRIGHTNESS));
+}
+
 void loop()
 {
-  fill_solid(leds, LED_COUNT, colorFor(outageCount));
-  FastLED.setBrightness(beatsin8(PULSE_BPM, PULSE_MIN_BRIGHTNESS, PULSE_MAX_BRIGHTNESS));
+  const int outages = outageCount;
+  if (outages == 0)
+    drawComet(colorFor(outages));
+  else
+    drawPulse(colorFor(outages));
   FastLED.show();
   FastLED.delay(10);
 }

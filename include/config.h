@@ -7,11 +7,15 @@ constexpr char FW_VERSION[] = "1.2.1";
 
 // --- LED strip ---------------------------------------------------------------
 #define LED_PIN 18                          // ESP32 GPIO wired to the strip's data line
-constexpr uint16_t LED_COUNT = 30;          // Number of LEDs on the strip
+constexpr uint16_t LED_COUNT = 17;          // Number of LEDs on the strip
 constexpr uint16_t LED_MAX_MILLIAMPS = 500; // Power cap; keeps a USB supply safe
 constexpr uint8_t PULSE_BPM = 20;           // Pulses per minute
 constexpr uint8_t PULSE_MIN_BRIGHTNESS = 15;
-constexpr uint8_t PULSE_MAX_BRIGHTNESS = 200;
+constexpr uint8_t PULSE_MAX_BRIGHTNESS = 100;
+// All-healthy (green) shows a comet chasing along the strip instead of pulsing.
+constexpr uint16_t COMET_STEP_MS = 40; // Time per LED step; lower = faster
+constexpr uint8_t COMET_FADE = 64;     // Tail fade per step (0-255); higher = shorter tail
+constexpr uint8_t COMET_BRIGHTNESS = 100;
 
 // --- Health thresholds -------------------------------------------------------
 // Services in outage: 0 = green, 1..(RED_THRESHOLD-1) = yellow, >= RED_THRESHOLD = red.
@@ -44,9 +48,15 @@ struct Service
 
 constexpr Service SERVICES[] = {
     {"GitHub", "https://www.githubstatus.com/api/v2/status.json"},
-    {"Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json"},
-    {"Discord", "https://discordstatus.com/api/v2/status.json"},
-    {"Atlassian", "https://status.atlassian.com/api/v2/status.json"},
     {"Claude", "https://status.claude.com/api/v2/status.json"},
+    {"Reddit", "https://www.redditstatus.com/api/v2/status.json"},
+    {"Zoom", "https://status.zoom.us/api/v2/status.json"},
+    {"Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json"},
+    {"DigitalOcean", "https://status.digitalocean.com/api/v2/status.json"},
+    {"Figma", "https://status.figma.com/api/v2/status.json"},
+    {"Vercel", "https://www.vercel-status.com/api/v2/status.json"},
+    {"Netlify", "https://www.netlifystatus.com/api/v2/status.json"},
+    {"npm", "https://status.npmjs.org/api/v2/status.json"},
+    {"Apple", "https://www.apple.com/support/systemstatus/data/system_status.json"},
 };
 constexpr size_t SERVICE_COUNT = sizeof(SERVICES) / sizeof(SERVICES[0]);
