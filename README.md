@@ -1,4 +1,4 @@
-# Services Status LED
+# Did My Day Just Get Worse?
 
 An ESP32 + WS2812B LED strip that shows the overall health of the online services you depend on,
 inspired by the network-status light in [I Like To Make Stuff's video](https://www.youtube.com/watch?v=WWTxgRnQeJ4) (from 10:47).
