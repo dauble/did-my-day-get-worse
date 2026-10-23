@@ -1,8 +1,9 @@
 // Services status LED strip.
 //
 // A background task checks internet reachability, then each service's status
-// page, and counts the ones in outage. The main loop pulses the whole strip: green (all healthy), yellow
-// (some in outage) or red (RED_THRESHOLD or more). Blue means "no result yet".
+// page, and counts the ones in outage. All healthy shows a sky blue breathing wave chasing along the strip;
+// otherwise the whole strip pulses yellow (some in outage) or red (RED_THRESHOLD or more).
+// Blue means "no result yet".
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -69,6 +70,12 @@ static bool isOnline()
 // Polls forever. An offline ISP is always red, however few services are configured.
 static void pollTask(void *)
 {
+  // Give WiFi a chance to connect so the first poll doesn't report a false ISP outage.
+  for (int i = 0; i < 20 && WiFi.status() != WL_CONNECTED; i++)
+    vTaskDelay(pdMS_TO_TICKS(500));
+
+  // Rounds start every POLL_INTERVAL_MS, however long the checks themselves take.
+  TickType_t lastRound = xTaskGetTickCount();
   for (;;)
   {
     int down = 0;
@@ -89,19 +96,20 @@ static void pollTask(void *)
       }
     }
     outageCount = down;
-    vTaskDelay(pdMS_TO_TICKS(POLL_INTERVAL_MS));
+    vTaskDelayUntil(&lastRound, pdMS_TO_TICKS(POLL_INTERVAL_MS));
   }
 }
 
 static CRGB colorFor(int outages)
 {
   if (outages == NO_RESULT)
-    return CRGB::Blue;
+    return CRGB(0, 0, 255);
   if (outages == 0)
-    return CRGB::Green;
+    return CRGB(0, 255, 0);
   if (outages < RED_THRESHOLD)
-    return CRGB(255, 140, 0); // Amber; pure yellow looks green on WS2812.
-  return CRGB::Red;
+    return CRGB(255, 187, 0); // Amber; pure yellow looks green on WS2812.
+
+  return CRGB(255, 0, 0);
 }
 
 void setup()
@@ -118,10 +126,33 @@ void setup()
   xTaskCreate(pollTask, "poll", 12288, nullptr, 1, nullptr);
 }
 
+// Every LED breathes, each slightly behind the previous one, so the glow rolls along the strip.
+static void drawChase(const CRGB &color)
+{
+  const uint16_t phase = uint32_t(millis() % CHASE_BREATH_MS) * 65536 / CHASE_BREATH_MS;
+  for (uint16_t i = 0; i < LED_COUNT; i++)
+  {
+    const uint16_t angle = phase - uint32_t(i) * 65536 * CHASE_WAVES / LED_COUNT;
+    const uint8_t wave = (sin16(angle) + 32768) >> 8; // 0..255
+    leds[i] = color;
+    leds[i].nscale8_video(CHASE_MIN_BRIGHTNESS + scale8(fl::dim8_video(wave), CHASE_MAX_BRIGHTNESS - CHASE_MIN_BRIGHTNESS));
+  }
+  FastLED.setBrightness(255); // Brightness is applied per LED above.
+}
+
+static void drawPulse(const CRGB &color)
+{
+  fill_solid(leds, LED_COUNT, color);
+  FastLED.setBrightness(beatsin8(PULSE_BPM, PULSE_MIN_BRIGHTNESS, PULSE_MAX_BRIGHTNESS));
+}
+
 void loop()
 {
-  fill_solid(leds, LED_COUNT, colorFor(outageCount));
-  FastLED.setBrightness(beatsin8(PULSE_BPM, PULSE_MIN_BRIGHTNESS, PULSE_MAX_BRIGHTNESS));
+  const int outages = outageCount;
+  if (outages == 0)
+    drawChase(colorFor(outages));
+  else
+    drawPulse(colorFor(outages));
   FastLED.show();
   FastLED.delay(10);
 }

@@ -3,6 +3,34 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-10-19
+
+### Changed
+- All-healthy now shows a slow breathing wave that chases along the strip instead of a comet. Tune it with `CHASE_BREATH_MS`, `CHASE_WAVES`, `CHASE_MIN_BRIGHTNESS` and `CHASE_MAX_BRIGHTNESS` in `include/config.h`.
+- Default `PULSE_MAX_BRIGHTNESS` lowered from 100 to 50.
+- Cloudflare removed from the default service list; its status page almost always has a minor incident open, which kept the strip on amber.
+
+### Fixed
+- Polls now start every `POLL_INTERVAL_MS` (60 seconds) instead of waiting that long after each round finishes, which made rounds about 70 seconds apart.
+
+### Removed
+- `COMET_STEP_MS`, `COMET_FADE` and `COMET_BRIGHTNESS`; existing configs that set them must switch to the `CHASE_*` options.
+
+## [1.3.0] - 2026-10-18
+
+### Added
+- All-healthy now shows a comet chasing along the strip instead of a pulse, tunable with `COMET_STEP_MS`, `COMET_FADE` and `COMET_BRIGHTNESS` in `include/config.h`.
+- More services in the default list: Reddit, Zoom, DigitalOcean, Figma, Vercel, Netlify and npm.
+
+### Changed
+- All-healthy color is now sky blue, and the outage amber is a warmer yellow.
+- Default `LED_COUNT` lowered from 30 to 17 and `PULSE_MAX_BRIGHTNESS` from 200 to 100.
+- Discord and Atlassian removed from the default service list.
+- FastLED pinned to the 3.9.x series (`~3.9.20`).
+
+### Fixed
+- The first poll after boot waits up to 10 seconds for WiFi, so it no longer reports a false ISP outage.
+
 ## [1.2.1] - 2026-10-17
 
 ### Changed
