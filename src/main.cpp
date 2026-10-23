@@ -105,7 +105,7 @@ static CRGB colorFor(int outages)
   if (outages == NO_RESULT)
     return CRGB(0, 0, 255);
   if (outages == 0)
-    return CRGB(0, 201, 255);
+    return CRGB(0, 255, 0);
   if (outages < RED_THRESHOLD)
     return CRGB(255, 187, 0); // Amber; pure yellow looks green on WS2812.
 
@@ -135,7 +135,7 @@ static void drawChase(const CRGB &color)
     const uint16_t angle = phase - uint32_t(i) * 65536 * CHASE_WAVES / LED_COUNT;
     const uint8_t wave = (sin16(angle) + 32768) >> 8; // 0..255
     leds[i] = color;
-    leds[i].nscale8_video(CHASE_MIN_BRIGHTNESS + scale8(dim8_video(wave), CHASE_MAX_BRIGHTNESS - CHASE_MIN_BRIGHTNESS));
+    leds[i].nscale8_video(CHASE_MIN_BRIGHTNESS + scale8(fl::dim8_video(wave), CHASE_MAX_BRIGHTNESS - CHASE_MIN_BRIGHTNESS));
   }
   FastLED.setBrightness(255); // Brightness is applied per LED above.
 }

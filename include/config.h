@@ -50,13 +50,13 @@ struct Service
 constexpr Service SERVICES[] = {
     {"GitHub", "https://www.githubstatus.com/api/v2/status.json"},
     {"Claude", "https://status.claude.com/api/v2/status.json"},
-    {"Reddit", "https://www.redditstatus.com/api/v2/status.json"},
-    {"Zoom", "https://status.zoom.us/api/v2/status.json"},
+    // {"Reddit", "https://www.redditstatus.com/api/v2/status.json"},
+    // {"Zoom", "https://status.zoom.us/api/v2/status.json"},
     // {"Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json"},
-    {"DigitalOcean", "https://status.digitalocean.com/api/v2/status.json"},
-    {"Figma", "https://status.figma.com/api/v2/status.json"},
-    {"Vercel", "https://www.vercel-status.com/api/v2/status.json"},
-    {"Netlify", "https://www.netlifystatus.com/api/v2/status.json"},
-    {"npm", "https://status.npmjs.org/api/v2/status.json"},
+    // {"DigitalOcean", "https://status.digitalocean.com/api/v2/status.json"},
+    // {"Figma", "https://status.figma.com/api/v2/status.json"},
+    // {"Vercel", "https://www.vercel-status.com/api/v2/status.json"},
+    // {"Netlify", "https://www.netlifystatus.com/api/v2/status.json"},
+    // {"npm", "https://status.npmjs.org/api/v2/status.json"},
 };
 constexpr size_t SERVICE_COUNT = sizeof(SERVICES) / sizeof(SERVICES[0]);
